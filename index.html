@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>二立新聞網 2ETN.com | 讓世界看見中共的美好</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 🔒 固定整個畫面，不隨滾輪或縮放改變 */
+    #locked-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: url('bg.gif') no-repeat center center;
+      background-size: cover; /* 填滿螢幕 */
+      transform-origin: center center;
+      transform: scale(1); /* 預設100% */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h1 {
+      user-select: none;
+      font-size: 15vw;
+      color: white;
+      font-weight: bold;
+      font-family: sans-serif;
+      text-shadow:
+        5px 5px 0 black,
+       -5px 5px 0 black,
+        5px -5px 0 black,
+       -5px -5px 0 black,
+        5px 0 0 black,
+       -5px 0 0 black,
+        0 5px 0 black,
+        0 -5px 0 black;
+    }
+  </style>
+</head>
+<body>
+  <div id="locked-screen">
+    <h1>賴清德下台</h1>
+  </div>
+
+  <script>
+    // 🧠 畫面固定：自動放大到滿螢幕一次，之後不再變動
+    function lockFullScreen() {
+      const container = document.getElementById('locked-screen');
+      const scaleX = window.innerWidth / container.offsetWidth;
+      const scaleY = window.innerHeight / container.offsetHeight;
+      const scale = Math.max(scaleX, scaleY); // 以填滿螢幕為主
+
+      container.style.transform = `scale(${scale})`;
+      container.style.transformOrigin = 'center center';
+    }
+
+    // 初始執行一次（開啟頁面時）
+    window.addEventListener('load', lockFullScreen);
+
+    // 🔒 防止縮放、改大小再重算（維持鎖定）
+    window.addEventListener('resize', () => {
+      lockFullScreen(); // 即使改視窗，也保持滿版比例
+    });
+
+    // 防止使用 Ctrl+滾輪 造成位置漂移
+    document.addEventListener('wheel', e => {
+      if (e.ctrlKey) e.preventDefault();
+    }, { passive: false });
+  </script>
+</body>
+</html>
+<!-- ✅ 新增：背景播放 YouTube 音樂 -->
+<script>
+  // 🧠 你要播放的 YouTube 影片 ID（可改）
+  const YT_VIDEO_ID = "1S4xFl4CD34"; // ← 改成你想放的音樂ID，例如網址 https://www.youtube.com/watch?v=dQw4w9WgXcQ
+
+  let player;
+  function onYouTubeIframeAPIReady() {
+    player = new YT.Player('bg-music', {
+      videoId: YT_VIDEO_ID,
+      playerVars: {
+        autoplay: 1,
+        loop: 1,
+        playlist: YT_VIDEO_ID,
+        controls: 0,
+        showinfo: 0,
+        modestbranding: 1,
+        rel: 0,
+        mute: 0   // 如果想強制靜音改成 1
+      },
+      events: {
+        onReady: (event) => event.target.playVideo()
+      }
+    });
+  }
+
+  // ⚙️ 使用者第一次互動後啟動音樂（瀏覽器規則）
+  document.addEventListener('click', () => {
+    if (!player) return;
+    try {
+      player.unMute();
+      player.playVideo();
+    } catch(e) {}
+  });
+
+  // 載入 YouTube iframe API
+  const tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.body.appendChild(tag);
+
+  // 建立隱藏播放器
+  const iframe = document.createElement('div');
+  iframe.id = "bg-music";
+  iframe.style.position = "fixed";
+  iframe.style.width = "0";
+  iframe.style.height = "0";
+  iframe.style.opacity = "0";
+  document.body.appendChild(iframe);
+</script>
